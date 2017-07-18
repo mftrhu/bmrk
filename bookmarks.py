@@ -47,7 +47,7 @@ class StanzaFormatter(object):
         self.line_wrap = 72
 
     def escape(self, line):
-        if line.startswith(self.comment) or line.endswith(self.separator):
+        if line.startswith(self.comment) or line.startswith(self.separator):
             line = "\\" + line
         return line
 

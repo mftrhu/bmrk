@@ -26,7 +26,7 @@ class Record(object):
         self.created = created
         if tags is None:
             tags = []
-        self.tags = tags
+        self.tags = list(filter(lambda i: len(i) > 0, tags))
         self.description = description
 
     def __repr__(self):

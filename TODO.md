@@ -7,7 +7,7 @@
   - [X] Transparently modify record
   - [_] Add `hash` method to Record
 - [x] Python implementation
-  - [_] Add new bookmark
+  - [x] Add new bookmark
   - [x] Open Nth bookmark
   - [_] Show Nth bookmark
   - [x] List bookmarks

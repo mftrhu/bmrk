@@ -5,12 +5,13 @@
   - [X] Read file as a stream of records
   - [X] Create and append record
   - [X] Transparently modify record
-- [_] Python implementation
+  - [_] Add `hash` method to Record
+- [x] Python implementation
   - [_] Add new bookmark
   - [_] Open/show Nth bookmark
-  - [_] List bookmarks
-    - [_] Filter by tag
-    - [_] Filter by keywords
+  - [x] List bookmarks
+    - [x] Filter by tag
+    - [x] Filter by keywords
     - [_] Filter by site (e.g. `site:*.wikipedia.org`)
   - [_] Edit Nth bookmark
 

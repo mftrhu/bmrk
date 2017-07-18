@@ -1,10 +1,10 @@
 # To-do
 
 - [x] Define the file format
-- [_] Python library
-  - [_] Read file as a stream of records
-  - [_] Create and append record
-  - [_] Transparently modify record
+- [X] Python library
+  - [X] Read file as a stream of records
+  - [X] Create and append record
+  - [X] Transparently modify record
 - [_] Python implementation
   - [_] Add new bookmark
   - [_] Open/show Nth bookmark

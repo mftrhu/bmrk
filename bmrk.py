@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 from bookmarks import Bookmarks, Record, StanzaFormatter
-import os, dateutil.parser, configargparse
+import os, dateutil.parser, configargparse, webbrowser
 
 def do_add(bookmarks, args):
     # Normalize the url
@@ -28,6 +28,22 @@ def do_list(bookmarks, args):
             if len(bookmark.tags) > 0:
                 print("       #{0}".format(" #".join(bookmark.tags)))
             print("       <{0}>".format(bookmark.url))
+
+def do_goto(bookmarks, args):
+    # Shenanigans to preserve order of ids as given on the command line
+    urls = [None] * len(args.ids)
+    checks = [bookmarks._found(id) for id in args.ids]
+    # Following code could likely be much better, but as it stands it
+    # should only go through the file once
+    for index, bookmark in enumerate(bookmarks):
+        for position, found in enumerate(checks):
+            if found(index, bookmark):
+                urls[position] = bookmark.url
+                checks.pop(position)
+                break
+    for url in urls:
+        if url is not None:
+            webbrowser.open(url)
 
 if __name__ == "__main__":
     parser = configargparse.ArgParser(default_config_files=["~/.bmrkrc"],
@@ -65,9 +81,14 @@ if __name__ == "__main__":
     # -o --out
     cmd_list.set_defaults(func=do_list)
 
+    cmd_goto = subparsers.add_parser("goto", aliases=["g", "go"],
+        help="jump to a bookmark")
+    cmd_goto.add_argument("ids", nargs="+", help="id of the bookmark(s)")
+    cmd_goto.set_defaults(func=do_goto)
+
     args = parser.parse_args()
     path = os.path.expanduser(args.file)
-    
+
     formatter = StanzaFormatter(
         date_format=args.date_format,
         date_parser=dateutil.parser.parse

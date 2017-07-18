@@ -8,7 +8,8 @@
   - [_] Add `hash` method to Record
 - [x] Python implementation
   - [_] Add new bookmark
-  - [_] Open/show Nth bookmark
+  - [x] Open Nth bookmark
+  - [_] Show Nth bookmark
   - [x] List bookmarks
     - [x] Filter by tag
     - [x] Filter by keywords

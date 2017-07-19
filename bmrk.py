@@ -66,21 +66,30 @@ def do_list(bookmarks, args):
                 print("       #{0}".format(" #".join(bookmark.tags)))
             print("       <{0}>".format(bookmark.url))
 
-def do_goto(bookmarks, args):
+def ordered_find(bookmarks, ids):
     # Shenanigans to preserve order of ids as given on the command line
-    urls = [None] * len(args.ids)
-    checks = [bookmarks._found(id) for id in args.ids]
+    marks = [None] * len(ids)
+    checks = [bookmarks._found(id) for id in ids]
     # Following code could likely be much better, but as it stands it
     # should only go through the file once
     for index, bookmark in enumerate(bookmarks):
         for position, found in enumerate(checks):
             if found(index, bookmark):
-                urls[position] = bookmark.url
+                marks[position] = bookmark
                 checks.pop(position)
                 break
-    for url in urls:
-        if url is not None:
-            webbrowser.open(url)
+    return list(filter(lambda m: m is not None, marks))
+
+def do_goto(bookmarks, args):
+    for mark in ordered_find(bookmarks, args.ids):
+        webbrowser.open(mark.url)
+
+def do_show(bookmarks, args):
+    for mark in ordered_find(bookmarks, args.ids):
+        if args.url_only:
+            print(mark.url)
+        else:
+            pass
 
 if __name__ == "__main__":
     parser = configargparse.ArgParser(default_config_files=["~/.bmrkrc"],
@@ -122,6 +131,13 @@ if __name__ == "__main__":
         help="jump to a bookmark")
     cmd_goto.add_argument("ids", nargs="+", help="id of the bookmark(s) to jump to")
     cmd_goto.set_defaults(func=do_goto)
+
+    cmd_show = subparsers.add_parser("show", aliases=["s", "sh"],
+        help="show one or more bookmarks")
+    cmd_show.add_argument("ids", nargs="+", help="id of the bookmark(s) to show")
+    cmd_show.add_argument("--url-only", action="store_true",
+        help="show only the url of the selected bookmarks")
+    cmd_show.set_defaults(func=do_show)
 
     args = parser.parse_args()
     path = os.path.expanduser(args.file)

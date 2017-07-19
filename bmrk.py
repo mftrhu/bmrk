@@ -49,6 +49,23 @@ def do_add(bookmarks, args):
     record = Record(url, title, tags=tags, description=desc)
     bookmarks.append(record)
 
+def show(index, bookmark, number=True, title=True, tags=True, url=True,
+    description=False):
+    out, indent = "", ""
+    if number:
+        out = "[{0:>4}] ".format(index)
+        indent = " " * 7
+    if title:
+        out += "{0.title}".format(bookmark) + "\n" + indent
+    if tags:
+        out += "#" + " #".join(bookmark.tags) + "\n" + indent
+    if url:
+        out += "{0.url}".format(bookmark) + "\n" + indent
+    if description:
+        for line in bookmark.description.splitlines():
+            out += line + "\n" + indent
+    print(out.strip())
+
 def do_list(bookmarks, args):
     check_tags = lambda b: all(tag in b.tags for tag in args.tags)
     if args.tags is None:
@@ -61,35 +78,32 @@ def do_list(bookmarks, args):
 
     for index, bookmark in enumerate(bookmarks):
         if check_keywords(bookmark) and check_tags(bookmark):
-            print("[{0:>4}] {1.title}".format(index, bookmark))
-            if len(bookmark.tags) > 0:
-                print("       #{0}".format(" #".join(bookmark.tags)))
-            print("       <{0}>".format(bookmark.url))
+            show(index, bookmark)
 
 def ordered_find(bookmarks, ids):
     # Shenanigans to preserve order of ids as given on the command line
     marks = [None] * len(ids)
-    checks = [bookmarks._found(id) for id in ids]
+    checks = [(i, bookmarks._found(id)) for i, id in enumerate(ids)]
     # Following code could likely be much better, but as it stands it
     # should only go through the file once
     for index, bookmark in enumerate(bookmarks):
-        for position, found in enumerate(checks):
+        for position, found in checks[::]:
             if found(index, bookmark):
-                marks[position] = bookmark
-                checks.pop(position)
+                marks[position] = (index, bookmark)
+                checks.remove((position, found))
                 break
     return list(filter(lambda m: m is not None, marks))
 
 def do_goto(bookmarks, args):
-    for mark in ordered_find(bookmarks, args.ids):
+    for index, mark in ordered_find(bookmarks, args.ids):
         webbrowser.open(mark.url)
 
 def do_show(bookmarks, args):
-    for mark in ordered_find(bookmarks, args.ids):
+    for index, mark in ordered_find(bookmarks, args.ids):
         if args.url_only:
             print(mark.url)
         else:
-            pass
+            show(index, mark, description=True)
 
 if __name__ == "__main__":
     parser = configargparse.ArgParser(default_config_files=["~/.bmrkrc"],
@@ -113,6 +127,7 @@ if __name__ == "__main__":
     cmd_add.add_argument("-t", "--title", help="title of the bookmark")
     cmd_add.add_argument("-n", "--no-edit", action="store_true",
         help="add the bookmark directly, without editing")
+    # -b --batch
     cmd_add.set_defaults(func=do_add)
 
     cmd_list = subparsers.add_parser("list", aliases=["l", "ls"],

@@ -10,14 +10,15 @@
 - [x] Python implementation
   - [x] Add new bookmark
   - [x] Open Nth bookmark
-  - [_] Show Nth bookmark
-    - [_] URL-only
+  - [x] Show Nth bookmark
+    - [x] URL-only
   - [x] List bookmarks
     - [x] Filter by tag
     - [x] Filter by keywords
     - [_] Filter by site (e.g. `site:*.wikipedia.org`)
   - [_] Edit Nth bookmark
   - [_] Delete Nth bookmark
+  - [_] Write documentation
 
 ## Possible features
 

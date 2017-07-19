@@ -14,7 +14,7 @@ def external_editor(content=""):
         if exit_code == 0:
             file.seek(0, 0)
             text = file.read(-1)
-            return text
+            return text.rstrip() + "\n"
 
 def parse(text):
     url, title, tags, desc = None, None, None, ""

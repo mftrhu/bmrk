@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
-import datetime, textwrap, tempfile
+import datetime, tempfile
 
 # Following shenanigans thanks to this vbem's StackOverflow [answer]
 # [answer]: <https://stackoverflow.com/a/39079819/8070745>
@@ -34,7 +34,7 @@ class Record(object):
 
 class StanzaFormatter(object):
     def __init__(self, date_format=None, separator="---", comment=";",
-    line_wrap=72, date_parser=None):
+    date_parser=None):
         if date_format is None:
             date_format = "%Y-%m-%d %H:%M:%S %z"
         self.date_format = date_format
@@ -44,7 +44,6 @@ class StanzaFormatter(object):
         self.date_parser = date_parser
         self.separator = separator
         self.comment = comment
-        self.line_wrap = 72
 
     def escape(self, line):
         if line.startswith(self.comment) or line.startswith(self.separator):
@@ -69,16 +68,7 @@ class StanzaFormatter(object):
             self.escape(record.title))
         if len(record.tags) > 0:
             out += ":{}:\n".format(":".join(record.tags))
-        if record.description and self.line_wrap is not None:
-            paragraphs = record.description.split("\n\n")
-            verbatim = lambda s: s.startswith("    ") or s.startswith("\t")
-            reflow = lambda p: "\n".join(self.escape(line) for line in
-                textwrap.wrap(p, self.line_wrap))
-            out += "\n\n".join(
-                paragraph if verbatim(paragraph) else reflow(paragraph)
-                for paragraph in paragraphs
-            ) + "\n"
-        elif record.description:
+        if record.description:
             out += record.description
         out += self.separator + "\n"
         return out

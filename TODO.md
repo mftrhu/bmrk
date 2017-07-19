@@ -1,20 +1,23 @@
 # To-do
 
 - [x] Define the file format
-- [X] Python library
-  - [X] Read file as a stream of records
-  - [X] Create and append record
-  - [X] Transparently modify record
+- [x] Python library
+  - [x] Read file as a stream of records
+  - [x] Create and append record
+  - [x] Transparently modify record
   - [_] Add `hash` method to Record
+  - [x] Disable word-wrap/shunt it to the frontend
 - [x] Python implementation
   - [x] Add new bookmark
   - [x] Open Nth bookmark
   - [_] Show Nth bookmark
+    - [_] URL-only
   - [x] List bookmarks
     - [x] Filter by tag
     - [x] Filter by keywords
     - [_] Filter by site (e.g. `site:*.wikipedia.org`)
   - [_] Edit Nth bookmark
+  - [_] Delete Nth bookmark
 
 ## Possible features
 

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 from bookmarks import Bookmarks, Record, StanzaFormatter
-import os, dateutil.parser, configargparse, webbrowser, urllib.parse
+import os, re, dateutil.parser, configargparse, webbrowser
+import urllib.parse, urllib.request, urllib.error
 
 def external_editor(content=""):
     import tempfile, subprocess
@@ -34,9 +35,18 @@ def parse(text):
 def do_add(bookmarks, args):
     url, title = args.url, args.title
     if url is None:
-        url, title = "https://example.com", "Title of the bookmark"
+        url = "https://example.com"
+        if title is None:
+            title = "Title of the bookmark"
     #TODO: Normalize the url
-    #TODO: If no title, then download the title from the target webpage
+    # If no title, then download the title from the target webpage
+    if title is None and not args.no_net:
+        try:
+            data = urllib.request.urlopen(url).read().decode("utf-8")
+            find_title = re.compile("<title>(.*?)</title>", re.IGNORECASE|re.DOTALL)
+            title = find_title.search(data).group(1)
+        except (urllib.error.URLError, AttributeError):
+            pass
     # If no internet, then use the domain itself
     if title is None:
         title = urllib.parse.urlsplit(url).netloc
@@ -125,8 +135,10 @@ if __name__ == "__main__":
     cmd_add.add_argument("url", nargs="?", type=str, help="URL to add")
     cmd_add.add_argument("tags", nargs="*", help="optional tags")
     cmd_add.add_argument("-t", "--title", help="title of the bookmark")
-    cmd_add.add_argument("-n", "--no-edit", action="store_true",
+    cmd_add.add_argument("-e", "--no-edit", action="store_true",
         help="add the bookmark directly, without editing")
+    cmd_add.add_argument("-n", "--no-net", action="store_true",
+        help="don't try get the bookmark title from the linked page")
     # -b --batch
     cmd_add.set_defaults(func=do_add)
 

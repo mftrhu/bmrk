@@ -9,6 +9,8 @@
   - [x] Disable word-wrap/shunt it to the frontend
 - [x] Python implementation
   - [x] Add new bookmark
+    - [x] Get title from linked page
+    - [_] Get tags from linked page (<meta>?)
   - [x] Open Nth bookmark
   - [x] Show Nth bookmark
     - [x] URL-only

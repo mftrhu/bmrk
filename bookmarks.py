@@ -70,6 +70,7 @@ class StanzaFormatter(object):
             out += ":{}:\n".format(":".join(record.tags))
         if record.description:
             out += record.description
+            out += "\n"
         out += self.separator + "\n"
         return out
 

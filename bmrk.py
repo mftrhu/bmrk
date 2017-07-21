@@ -52,14 +52,15 @@ def do_add(bookmarks, args):
     # If no internet, then use the domain itself
     if title is None:
         title = urllib.parse.urlsplit(url).netloc
+    tags = args.tags if args.tags is not None else []
     initial_content = (
         "<{0}>\n{1}\n; Tags, separated by :\n:{2}:\n; Add any notes after this line\n"
-    ).format(url, title, ":".join(args.tags))
+    ).format(url, title, ":".join(tags))
     # Then open into $EDITOR
     if not args.no_edit:
         url, title, tags, desc = parse(external_editor(initial_content))
     else:
-        tags, desc = args.tags, ""
+        desc = ""
     # Parse it into a Record and .append() it
     record = Record(url, title, tags=tags, description=desc)
     bookmarks.append(record)
@@ -72,7 +73,7 @@ def show(index, bookmark, number=True, title=True, tags=True, url=True,
         indent = " " * 7
     if title:
         out += "{0.title}".format(bookmark) + "\n" + indent
-    if tags:
+    if tags and len(bookmark.tags) > 0:
         out += "#" + " #".join(bookmark.tags) + "\n" + indent
     if url:
         out += "{0.url}".format(bookmark) + "\n" + indent

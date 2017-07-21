@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 from bookmarks import Bookmarks, Record, StanzaFormatter
-import os, re, dateutil.parser, configargparse, webbrowser
+import os, re, sys, stat, dateutil.parser, configargparse, webbrowser
 import urllib.parse, urllib.request, urllib.error
 
 def external_editor(content=""):
@@ -59,6 +59,7 @@ def do_add(bookmarks, args):
     # Then open into $EDITOR
     if not args.no_edit:
         url, title, tags, desc = parse(external_editor(initial_content))
+        #TODO: should disallow adding bookmarks without a title
     else:
         desc = ""
     # Parse it into a Record and .append() it
@@ -179,6 +180,14 @@ if __name__ == "__main__":
         date_format=args.date_format,
         date_parser=dateutil.parser.parse
     )
+
     bookmarks = Bookmarks(path, formatter=formatter)
 
-    args.func(bookmarks, args)
+    mode = os.fstat(0).st_mode
+    # Check whether bmrk is being piped to
+    if stat.S_ISFIFO(mode) or stat.S_ISREG(mode):
+        tags, no_edit, no_net = args.tags, args.no_edit, args.no_net
+        for line in sys.stdin.readlines():
+            print("** %s" % line)
+    else:
+        args.func(bookmarks, args)

@@ -20,7 +20,7 @@
     - [_] Filter by site (e.g. `site:*.wikipedia.org`)
   - [_] Edit Nth bookmark
   - [_] Delete Nth bookmark
-  - [_] Write documentation
+  - [x] Write documentation
 
 ## Possible features
 

@@ -33,7 +33,7 @@ def parse(text):
     return url, title, tags, desc.rstrip()
 
 def do_add(bookmarks, args):
-    url, title = args.url, args.title
+    url, title = args.url, " ".join(args.title)
     if url is None:
         url = "https://example.com"
         if title is None:
@@ -138,8 +138,8 @@ if __name__ == "__main__":
     cmd_add = subparsers.add_parser("add", aliases=["a"],
         help="add a new bookmark")
     cmd_add.add_argument("url", nargs="?", type=str, help="URL to add")
-    cmd_add.add_argument("tags", nargs="*", help="optional tags")
-    cmd_add.add_argument("-t", "--title", help="title of the bookmark")
+    cmd_add.add_argument("title", nargs="*", help="title of the bookmark")
+    cmd_add.add_argument("-t", "--tags", nargs="+", help="optional tags")
     cmd_add.add_argument("-e", "--no-edit", action="store_true",
         help="add the bookmark directly, without editing")
     cmd_add.add_argument("-n", "--no-net", action="store_true",

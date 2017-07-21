@@ -1,6 +1,59 @@
 # bmrk
 A simple plaintext format for bookmarks, and a CLI app.
 
+## Usage
+
+The CLI app *tries* (success is not guaranteed) to be simple to use. It
+offers four sub-commands: add, list, goto and show.
+
+### add
+
+**Params:** `[URL] [TITLE...] [-t|--tags TAGS...] [-e|--no-edit] [-n|--no-net]`  
+**Aliases:** `a`
+
+Adds a bookmark to the bookmarks file, with URL `URL`, title `TITLE` and
+tags `TAGS`. If any of these (or even all of them) are absent, `bmrk`
+either leaves the relevant field empty (for tags) or tries to fill it
+with something useful - for example, getting the title of the page from
+the page itself (unless `--no-net` was selected).
+
+Unless `--no-edit` was specified `bmrk` will then open the default editor
+(as specified by the environment variable `EDITOR`), allowing the user to
+modify the data and optionally add a description.
+
+### list
+
+**Params:** `[KEYWORDS...] [-t|--tags TAGS...]`  
+**Aliases:** `l`, `ls`
+
+Shows a list of the bookmarks that conform to the query - that is, that
+contain `KEYWORDS` in their title or description, and that contain all
+the `TAGS` specified. 
+
+If no keywords/tags are specified then shows all the bookmarks.
+
+Example output:
+
+    $ bmrk
+    [   0] Example website
+           #example #website #whew #redundancy
+           https://example.com
+
+### goto
+
+**Params:** `ID...`  
+**Aliases:** `g`, `go`
+
+Opens the bookmark(s) specified by `ID` in the default web browser.
+
+### show
+
+**Params:** `ID... [--url-only]`  
+**Aliases:** `s`, `sh`
+
+Shows the bookmark(s) specified by `ID`, including the description -
+unless `--url-only` was specified, which results in a list of the URLs.
+
 ## Format definition
 
 The format of the file itself should be simple, with an implicit and

@@ -42,6 +42,8 @@ def do_add(bookmarks, args):
     # If no title, then download the title from the target webpage
     if title is None and not args.no_net:
         try:
+            #WARN: will probably raise an error when dealing with pages
+            # not in utf-8 - what's the "default" encoding?
             data = urllib.request.urlopen(url).read().decode("utf-8")
             find_title = re.compile("<title>(.*?)</title>", re.IGNORECASE|re.DOTALL)
             title = find_title.search(data).group(1)
@@ -54,7 +56,10 @@ def do_add(bookmarks, args):
         "<{0}>\n{1}\n; Tags, separated by :\n:{2}:\n; Add any notes after this line\n"
     ).format(url, title, ":".join(args.tags))
     # Then open into $EDITOR
-    url, title, tags, desc = parse(external_editor(initial_content))
+    if not args.no_edit:
+        url, title, tags, desc = parse(external_editor(initial_content))
+    else:
+        tags, desc = args.tags, ""
     # Parse it into a Record and .append() it
     record = Record(url, title, tags=tags, description=desc)
     bookmarks.append(record)

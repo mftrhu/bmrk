@@ -36,11 +36,11 @@ def do_add(bookmarks, args):
     url, title = args.url, " ".join(args.title)
     if url is None:
         url = "https://example.com"
-        if title is None:
+        if len(title) == 0:
             title = "Title of the bookmark"
     #TODO: Normalize the url
     # If no title, then download the title from the target webpage
-    if title is None and not args.no_net:
+    if len(title) == 0 and not args.no_net:
         try:
             #WARN: will probably raise an error when dealing with pages
             # not in utf-8 - what's the "default" encoding?
@@ -50,8 +50,9 @@ def do_add(bookmarks, args):
         except (urllib.error.URLError, AttributeError):
             pass
     # If no internet, then use the domain itself
-    if title is None:
+    if len(title) == 0:
         title = urllib.parse.urlsplit(url).netloc
+    title = title.strip()
     tags = args.tags if args.tags is not None else []
     initial_content = (
         "<{0}>\n{1}\n; Tags, separated by :\n:{2}:\n; Add any notes after this line\n"

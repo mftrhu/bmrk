@@ -4,7 +4,7 @@ A simple plaintext format for bookmarks, and a CLI app.
 ## Usage
 
 The CLI app *tries* (success is not guaranteed) to be simple to use. It
-offers four sub-commands: add, list, goto and show.
+offers six sub-commands: add, list, goto, show, edit and remove.
 
 ### add
 
@@ -53,6 +53,22 @@ Opens the bookmark(s) specified by `ID` in the default web browser.
 
 Shows the bookmark(s) specified by `ID`, including the description -
 unless `--url-only` was specified, which results in a list of the URLs.
+
+### edit
+
+**Params:** `ID`  
+**Aliases:** `e`, `ed`
+
+Opens the bookmark specified by `ID` in the default editor and updates it
+accordingly. 
+
+### remove
+
+**Params:** `ID`  
+**Aliases:** `rm`
+
+Deletes the bookmark specified by `ID`. **Warning:** doesn't ask for
+confirmation yet.
 
 ## Format definition
 

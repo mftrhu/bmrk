@@ -22,7 +22,8 @@
     - [ ] Filter by site (e.g. `site:*.wikipedia.org`)
   - [x] Edit Nth bookmark
     - [ ] Edit multiple bookmarks?
-  - [ ] Delete Nth bookmark
+  - [x] Delete Nth bookmark
+    - [ ] "Are you sure you want to delete [...]?", plus `--yes`
     - [ ] Delete multiple bookmarks?
   - [x] Write documentation
 

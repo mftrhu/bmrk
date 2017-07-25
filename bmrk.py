@@ -4,6 +4,19 @@ from bookmarks import Bookmarks, Record, StanzaFormatter
 import os, re, sys, stat, dateutil.parser, configargparse, webbrowser
 import urllib.parse, urllib.request, urllib.error
 
+def html_unescape(string):
+    try:
+        import html
+    except ImportError:
+        try:
+            # Python 2.6-2.7
+            from HTMLParser import HTMLParser
+        except ImportError:
+            # Python 3
+            from html.parser import HTMLParser
+        html = HTMLParser()
+    return html.unescape(string)
+
 def external_editor(content=""):
     import tempfile, subprocess
     editor = os.environ.get("EDITOR", "vim")
@@ -78,6 +91,7 @@ def do_add(bookmarks, args):
             data = urllib.request.urlopen(url).read().decode("utf-8")
             find_title = re.compile("<title>(.*?)</title>", re.IGNORECASE|re.DOTALL)
             title = find_title.search(data).group(1)
+            title = html_unescape(title)
         except (urllib.error.URLError, AttributeError):
             pass
     # If no internet, then use the domain itself

@@ -18,6 +18,7 @@ def external_editor(content=""):
             return text.rstrip() + "\n"
 
 def parse(text):
+    taglike = lambda line: line.startswith(":") and line.endswith(":")
     url, title, tags, desc = None, None, None, ""
     for line in text.splitlines():
         if line.startswith(";"):
@@ -26,11 +27,31 @@ def parse(text):
             url = line.lstrip("<").rstrip(">")
         elif title is None:
             title = line
-        elif tags is None and line.startswith(":") and line.endswith(":"):
+        elif tags is None and taglike(line):
             tags = line.strip(":").split(":")
         else:
             desc += line + "\n"
     return url, title, tags, desc.rstrip()
+
+def do_edit(bookmarks, args):
+    mark = bookmarks[args.id]
+    if mark is None:
+        print("bmrk: no bookmark with id `{0}' exists.".format(args.id))
+        return 1
+    initial_content = (
+        "<{0}>\n{1}\n; Tags, separated by :\n:{2}:\n"
+        "; Add any notes after this line\n"
+        "{3}"
+    ).format(mark.url, mark.title, ":".join(mark.tags), mark.description)
+    # Open into $EDITOR
+    url, title, tags, desc = parse(external_editor(initial_content))
+    # "check" for validity
+    if len(url) == 0 or len(title) == 0:
+        print("bmrk: URL and title cannot be empty.")
+        return 2
+    record = Record(url, title, tags=tags, description=desc)
+    # Finally, save to file
+    bookmarks[args.id] = record
 
 def do_add(bookmarks, args):
     url, title = args.url, " ".join(args.title)
@@ -55,14 +76,17 @@ def do_add(bookmarks, args):
     title = title.strip()
     tags = args.tags if args.tags is not None else []
     initial_content = (
-        "<{0}>\n{1}\n; Tags, separated by :\n:{2}:\n; Add any notes after this line\n"
+        "<{0}>\n{1}\n; Tags, separated by :\n:{2}:\n"
+        "; Add any notes after this line\n"
     ).format(url, title, ":".join(tags))
+    desc = ""
     # Then open into $EDITOR
     if not args.no_edit:
         url, title, tags, desc = parse(external_editor(initial_content))
-        #TODO: should disallow adding bookmarks without a title
-    else:
-        desc = ""
+    # "check" for validity
+    if len(url) == 0 or len(title) == 0:
+        print("bmrk: URL and title cannot be empty.")
+        return 2
     # Parse it into a Record and .append() it
     record = Record(url, title, tags=tags, description=desc)
     bookmarks.append(record)
@@ -174,6 +198,11 @@ if __name__ == "__main__":
         help="show only the url of the selected bookmarks")
     cmd_show.set_defaults(func=do_show)
 
+    cmd_edit = subparsers.add_parser("edit", aliases=["e", "ed"],
+        help="edit a bookmark")
+    cmd_edit.add_argument("id", help="id of the bookmark to edit")
+    cmd_edit.set_defaults(func=do_edit)
+
     args = parser.parse_args()
     path = os.path.expanduser(args.file)
 
@@ -191,4 +220,4 @@ if __name__ == "__main__":
         for line in sys.stdin.readlines():
             print("** %s" % line)
     else:
-        args.func(bookmarks, args)
+        exit(args.func(bookmarks, args))

@@ -18,7 +18,7 @@
     - [x] Filter by tag
     - [x] Filter by keywords
     - [_] Filter by site (e.g. `site:*.wikipedia.org`)
-  - [_] Edit Nth bookmark
+  - [x] Edit Nth bookmark
   - [_] Delete Nth bookmark
   - [x] Write documentation
 

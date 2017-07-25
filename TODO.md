@@ -7,6 +7,8 @@
   - [x] Transparently modify record
   - [ ] Add `hash` method to Record
   - [x] Disable word-wrap/shunt it to the frontend
+  - [ ] Make `__getitem__`, `__setitem__` & co behave properly (AKA,
+        raise exceptions)
 - [x] Python implementation
   - [x] Add new bookmark
     - [x] Get title from linked page

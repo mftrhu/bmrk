@@ -33,6 +33,15 @@ def parse(text):
             desc += line + "\n"
     return url, title, tags, desc.rstrip()
 
+def do_remove(bookmarks, args):
+    mark = bookmarks[args.id]
+    if mark is None:
+        print("bmrk: no bookmark with id `{0}' exists.".format(args.id))
+        return 1
+    #TODO: ask for confirmation here, maybe?
+    # Delete the bookmark
+    del bookmarks[args.id]
+
 def do_edit(bookmarks, args):
     mark = bookmarks[args.id]
     if mark is None:
@@ -202,6 +211,11 @@ if __name__ == "__main__":
         help="edit a bookmark")
     cmd_edit.add_argument("id", help="id of the bookmark to edit")
     cmd_edit.set_defaults(func=do_edit)
+
+    cmd_remove = subparsers.add_parser("remove", aliases=["rm"],
+        help="edit a bookmark")
+    cmd_remove.add_argument("id", help="id of the bookmark to remove")
+    cmd_remove.set_defaults(func=do_remove)
 
     args = parser.parse_args()
     path = os.path.expanduser(args.file)

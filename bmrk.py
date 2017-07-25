@@ -58,7 +58,8 @@ def do_edit(bookmarks, args):
     if len(url) == 0 or len(title) == 0:
         print("bmrk: URL and title cannot be empty.")
         return 2
-    record = Record(url, title, tags=tags, description=desc)
+    record = Record(url, title, created=mark.created, tags=tags,
+        description=desc)
     # Finally, save to file
     bookmarks[args.id] = record
 

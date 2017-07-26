@@ -71,7 +71,11 @@ def do_edit(bookmarks, args):
         "{3}"
     ).format(mark.url, mark.title, ":".join(mark.tags), mark.description)
     # Open into $EDITOR
-    url, title, tags, desc = parse(external_editor(initial_content))
+    content = external_editor(initial_content)
+    if content is None:
+        print("bmrk: editor quit with an error, canceling.")
+        return 3
+    url, title, tags, desc = parse(content)
     # "check" for validity
     if len(url) == 0 or len(title) == 0:
         print("bmrk: URL and title cannot be empty.")
@@ -111,7 +115,11 @@ def do_add(bookmarks, args):
     desc = ""
     # Then open into $EDITOR
     if not args.no_edit:
-        url, title, tags, desc = parse(external_editor(initial_content))
+        content = external_editor(initial_content)
+        if content is None:
+            print("bmrk: editor quit with an error, canceling.")
+            return 3
+        url, title, tags, desc = parse(content)
     # "check" for validity
     if len(url) == 0 or len(title) == 0:
         print("bmrk: URL and title cannot be empty.")

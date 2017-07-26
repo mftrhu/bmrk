@@ -2,7 +2,7 @@
 # -*- coding: utf8 -*-
 from bookmarks import Bookmarks, Record, StanzaFormatter
 import os, re, sys, stat, dateutil.parser, configargparse, webbrowser
-import urllib.parse, urllib.request, urllib.error
+import urllib.parse, urllib.request, urllib.error, datetime
 
 def html_unescape(string):
     try:
@@ -132,18 +132,40 @@ def show(index, bookmark, number=True, title=True, tags=True, url=True,
             out += line + "\n" + indent
     print(out.strip())
 
+def dateify(i):
+    return datetime.date(i.year, i.month, i.day)
+
+def day_diff(a, b):
+    a, b = dateify(a), dateify(b)
+    return (max(a, b) - min(a, b)).days
+
+do_specials = {
+    "today": lambda b: day_diff(datetime.date.today(), b.created) < 1,
+    "yesterday": lambda b: day_diff(datetime.date.today(), b.created) <= 1,
+    "week": lambda b: day_diff(datetime.date.today(), b.created) <= 7,
+}
+
+always_true = lambda *a: True
+
 def do_list(bookmarks, args):
     check_tags = lambda b: all(tag in b.tags for tag in args.tags)
     if args.tags is None:
         check_tags = lambda b: True
 
-    check_keywords = lambda b: (any((kw in b.title) for kw in args.keywords)
-        or any((kw in b.description) for kw in args.keywords))
-    if len(args.keywords) == 0:
+    keywords = [kw.lower() for kw in args.keywords if not kw.startswith(":")]
+    specials = [kw.lower()[1:] for kw in args.keywords if kw.startswith(":")]
+
+    check_specials = lambda b: (all(do_specials.get(special, always_true)(b)
+        for special in specials))
+
+    check_keywords = lambda b: (any((kw in b.title.lower()) for kw in keywords)
+        or any((kw in b.description.lower()) for kw in keywords))
+    if len(keywords) == 0:
         check_keywords = lambda b: True
 
     for index, bookmark in enumerate(bookmarks):
-        if check_keywords(bookmark) and check_tags(bookmark):
+        if (check_specials(bookmark) and check_keywords(bookmark)
+            and check_tags(bookmark)):
             show(index, bookmark)
 
 def ordered_find(bookmarks, ids):

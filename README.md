@@ -39,6 +39,12 @@ Example output:
            #example #website #whew #redundancy
            https://example.com
 
+Keywords starting with `:` are treated differently. As of this time, only 
+`:today`, `:yesterday` and `:week` exist - they are used as shorthands to
+specify a time range that extends to the current day. AKA, `:today` will
+show only the bookmarks added within the last 24 hours, `:yesterday`
+those added within the last two days and so on.
+
 ### goto
 
 **Params:** `ID...`  

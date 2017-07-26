@@ -19,6 +19,7 @@
   - [x] List bookmarks
     - [x] Filter by tag
     - [x] Filter by keywords
+    - [x] Filter by `:today`, `:yesterday`, ...
     - [ ] Filter by site (e.g. `site:*.wikipedia.org`)
   - [x] Edit Nth bookmark
     - [ ] Edit multiple bookmarks?

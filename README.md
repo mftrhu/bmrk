@@ -70,11 +70,11 @@ accordingly.
 
 ### remove
 
-**Params:** `ID`  
+**Params:** `ID [-y|--yes]`  
 **Aliases:** `rm`
 
-Deletes the bookmark specified by `ID`. **Warning:** doesn't ask for
-confirmation yet.
+Deletes the bookmark specified by `ID`, showing the bookmark and asking
+for confirmation unless `--yes` was specified.
 
 ## Format definition
 

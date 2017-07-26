@@ -24,7 +24,7 @@
   - [x] Edit Nth bookmark
     - [ ] Edit multiple bookmarks?
   - [x] Delete Nth bookmark
-    - [ ] "Are you sure you want to delete [...]?", plus `--yes`
+    - [x] "Are you sure you want to delete [...]?", plus `--yes`
     - [ ] Delete multiple bookmarks?
   - [x] Write documentation
 

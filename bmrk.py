@@ -51,7 +51,12 @@ def do_remove(bookmarks, args):
     if mark is None:
         print("bmrk: no bookmark with id `{0}' exists.".format(args.id))
         return 1
-    #TODO: ask for confirmation here, maybe?
+    if not args.yes:
+        show(args.id, mark)
+        print()
+        answer = input("Are you sure you want to delete this bookmark [yes/no]? ")
+        if answer.lower() not in ("yes", "y"):
+            return 0
     # Delete the bookmark
     del bookmarks[args.id]
 
@@ -252,6 +257,8 @@ if __name__ == "__main__":
     cmd_remove = subparsers.add_parser("remove", aliases=["rm"],
         help="edit a bookmark")
     cmd_remove.add_argument("id", help="id of the bookmark to remove")
+    cmd_remove.add_argument("-y", "--yes", action="store_true",
+        help="do not ask for confirmation on remotion")
     cmd_remove.set_defaults(func=do_remove)
 
     args = parser.parse_args()

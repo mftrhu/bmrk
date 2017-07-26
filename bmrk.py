@@ -161,12 +161,12 @@ do_specials = {
 always_true = lambda *a: True
 
 def do_list(bookmarks, args):
-    include = [tag for tag in args.tags if not tag.startswith("!")]
-    exclude = [tag[1:] for tag in args.tags if tag.startswith("!")]
-
-    check_tags = lambda b: (all(tag in b.tags for tag in include) and
-        all(tag not in b.tags for tag in exclude))
-    if args.tags is None:
+    if args.tags is not None:
+        include = [tag for tag in args.tags if not tag.startswith("!")]
+        exclude = [tag[1:] for tag in args.tags if tag.startswith("!")]
+        check_tags = lambda b: (all(tag in b.tags for tag in include) and
+            all(tag not in b.tags for tag in exclude))
+    else:
         check_tags = lambda b: True
 
     keywords = [kw.lower() for kw in args.keywords if not kw.startswith(":")]

@@ -97,7 +97,11 @@ def do_add(bookmarks, args):
         try:
             #WARN: will probably raise an error when dealing with pages
             # not in utf-8 - what's the "default" encoding?
-            data = urllib.request.urlopen(url).read().decode("utf-8")
+            data = urllib.request.urlopen(url).read()
+            try:
+                data = data.decode("utf-8")
+            except UnicodeDecodeError:
+                data = data.decode("latin-1")
             find_title = re.compile("<title>(.*?)</title>", re.IGNORECASE|re.DOTALL)
             title = find_title.search(data).group(1)
             title = html_unescape(title)

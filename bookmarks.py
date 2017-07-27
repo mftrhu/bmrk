@@ -51,14 +51,9 @@ class StanzaFormatter(object):
         return line
 
     def unescape(self, line):
-        out, escaped = "", False
-        for char in line:
-            if not escaped and char == "\\":
-                escaped = True
-                continue
-            escaped = False
-            out += char
-        return out
+        if line.startswith("\\"):
+            return line[1:]
+        return line
 
     def write(self, record):
         if type(record) is str:
@@ -69,8 +64,9 @@ class StanzaFormatter(object):
         if len(record.tags) > 0:
             out += ":{}:\n".format(":".join(record.tags))
         if record.description:
-            out += record.description.rstrip()
-            out += "\n"
+            for line in record.description.splitlines():
+                out += self.escape(line).rstrip()
+                out += "\n"
         out += self.separator + "\n"
         return out
 
